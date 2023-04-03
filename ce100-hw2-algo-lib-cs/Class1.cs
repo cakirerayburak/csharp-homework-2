@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
+ 
+ * @author Eray Burak ÇAKIR and Süleyman Mert ALMALI
+ 
+ */
 namespace ce100_hw2_algo_lib_cs
 {
 
 
 
-    public class MATRIXMULTIPLICATION
+    public class HeapSortAlgorithm
     {
 
 
@@ -19,7 +23,7 @@ namespace ce100_hw2_algo_lib_cs
         /// <param name="inputArray">The input array to be sorted.</param>
         /// <param name="outputArray">The sorted output array.</param>
         /// <returns>Returns 0 on success or -1 on failure.</returns>
-        
+
         public static int HeapSort(int[] inputArray, out int[] outputArray)
         {
             outputArray = null;
@@ -93,7 +97,11 @@ namespace ce100_hw2_algo_lib_cs
             }
         }
 
+    }
 
+
+    public class MatrixChainMultiplicationAlgorithm
+    {
         /**
 
         Calculates the minimum cost of multiplying a sequence of matrices using dynamic programming.
@@ -110,41 +118,34 @@ namespace ce100_hw2_algo_lib_cs
 
         */
 
-        public static int mcmdp(int[] matrixDimensionArray, ref string matrixOrder, ref int operationCount)
+        private readonly static int[,] dp2 = new int[100, 100];
+
+        // Function for matrix chain multiplication
+        static int matrixChainMemoised(int[] p, int i, int j)
         {
-            int n = matrixDimensionArray.Length - 1;
-
-            // initialize dp table
-            int[,] dp = new int[n, n];
-            for (int i = 0; i < n; i++)
+            if (i == j)
             {
-                for (int j = 0; j < n; j++)
-                {
-                    dp[i, j] = int.MaxValue;
-                }
+                return 0;
             }
-
-            // fill the dp table
-            for (int len = 1; len < n; len++)
+            if (dp2[i, j] != -1)
             {
-                for (int i = 0; i < n - len; i++)
-                {
-                    int j = i + len;
-
-                    for (int k = i; k < j; k++)
-                    {
-                        int cost = dp[i, k] + dp[k + 1, j] + matrixDimensionArray[i] * matrixDimensionArray[k + 1] * matrixDimensionArray[j + 1];
-                        if (cost < dp[i, j])
-                        {
-                            dp[i, j] = cost;
-                            matrixOrder = "(" + matrixOrder.Substring(0, (i + 1) * 2 - 1) + matrixOrder.Substring((k + 1) * 2 - 1, (j - k) * 2 - 1) + ")";
-                        }
-                        operationCount++;
-                    }
-                }
+                return dp2[i, j];
             }
+            dp2[i, j] = Int32.MaxValue;
+            for (int k = i; k < j; k++)
+            {
+                dp2[i, j] = Math.Min(
+                  dp2[i, j], matrixChainMemoised(p, i, k)
+                  + matrixChainMemoised(p, k + 1, j)
+                  + p[i - 1] * p[k] * p[j]);
+            }
+            return dp2[i, j];
+        }
 
-            return dp[0, n - 1];
+        public static int MatrixChainMultiplication_DP(int[] p, int n)
+        {
+            int i = 1, j = n - 1;
+            return matrixChainMemoised(p, i, j);
         }
 
 
@@ -157,44 +158,6 @@ namespace ce100_hw2_algo_lib_cs
 
 
 
-        /**
-
-        Computes the length of the Longest Common Subsequence (LCS) between two strings.
-
-        @param A The first string.
-
-        @param B The second string.
-
-        @return The length of the LCS.
-        */
-
-        public static int LCS(string A, string B)
-        {
-            int m = A.Length;
-            int n = B.Length;
-
-            // create table to store LCS length
-            int[,] dp = new int[m + 1, n + 1];
-
-            // fill table with LCS length values
-            for (int i = 1; i <= m; i++)
-            {
-                for (int j = 1; j <= n; j++)
-                {
-                    if (A[i - 1] == B[j - 1])
-                    {
-                        dp[i, j] = dp[i - 1, j - 1] + 1;
-                    }
-                    else
-                    {
-                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
-                    }
-                }
-            }
-
-            // LCS length is in the last cell of the table
-            return dp[m, n];
-        }
 
 
 
@@ -243,32 +206,151 @@ namespace ce100_hw2_algo_lib_cs
         }
 
 
-        /**
+    }
 
-        @brief Main method for testing MatrixChainMultiplication function
-        */
-        static void Main()
+
+
+
+        public class LongestCommonSubsequence
         {
-            int n = int.Parse(Console.ReadLine());
-            int[] v = new int[n];
-            for (int i = 0; i < n; i++)
-            {
-                v[i] = int.Parse(Console.ReadLine());
-            }
+            /**
 
-            dp = new int[n, n];
-            for (int i = 0; i < n; i++)
+            Computes the length of the Longest Common Subsequence (LCS) between two strings.
+
+            @param A The first string.
+
+            @param B The second string.
+
+            @return The length of the LCS.
+            */
+
+            public static int LCS(string A, string B)
             {
-                for (int j = 0; j < n; j++)
+                int m = A.Length;
+                int n = B.Length;
+
+                // create table to store LCS length
+                int[,] dp = new int[m + 1, n + 1];
+
+                // fill table with LCS length values
+                for (int i = 1; i <= m; i++)
                 {
-                    dp[i, j] = -1;
+                    for (int j = 1; j <= n; j++)
+                    {
+                        if (A[i - 1] == B[j - 1])
+                        {
+                            dp[i, j] = dp[i - 1, j - 1] + 1;
+                        }
+                        else
+                        {
+                            dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+                        }
+                    }
                 }
+
+                // LCS length is in the last cell of the table
+                return dp[m, n];
             }
 
-           
+
+
         }
 
+
+            /**
+
+        @brief This method solves the 0-1 knapsack problem using dynamic programming.
+
+        @param values An array containing the values of the items.
+
+        @param weight An array containing the weights of the items.
+
+        @param maxBenefit The maximum benefit that can be obtained from the knapsack.
+
+        @return The maximum value that can be obtained from the knapsack.
+
+        @details This method solves the 0-1 knapsack problem using dynamic programming.
+
+        The problem is defined as follows: given a set of items, each with a weight and a value,
+
+        determine the number of each item to include in a collection so that the total weight
+
+        is less than or equal to a given limit and the total value is as large as possible.
+
+        The method returns the maximum value that can be obtained from the knapsack.
+
+        */
+
+
+            public class KnapsackAlgorithm
+            {
+
+
+                public static int Knapsack01(int[] values, int[] weigth, int maxBenefit)
+                {
+                    int N = values.Length;
+                    int[,] m = new int[N + 1, maxBenefit + 1];
+
+                    for (int c = 0; c <= maxBenefit; c++)
+                    {
+                        m[0, c] = 0;
+                    }
+
+                    for (int i = 1; i <= N; i++)
+                    {
+                        for (int c = 0; c <= maxBenefit; c++)
+                        {
+                            if (weigth[i - 1] <= c)
+                            {
+                                m[i, c] = Math.Max(m[i - 1, c], values[i - 1] + m[i - 1, c - weigth[i - 1]]);
+                            }
+                            else
+                            {
+                                m[i, c] = m[i - 1, c];
+                            }
+                        }
+                    }
+
+                    if (m[N, maxBenefit] == int.MinValue)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return m[N, maxBenefit];
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
 }
 
 
@@ -281,52 +363,48 @@ namespace ce100_hw2_algo_lib_cs
 
 
 
+//public void KnapsackDyProg(int[] W, int[] V, int M, int n)
+//{
+//    int[,] B = new int[n + 1, M + 1];
 
+//    for (int i = 0; i <= n; i++)
+//        for (int j = 0; j <= M; j++)
+//        {
+//            B[i, j] = 0;
+//        }
 
+//    for (int i = 1; i <= n; i++)
+//    {
+//        for (int j = 0; j <= M; j++)
+//        {
+//            B[i, j] = B[i - 1, j];
 
+//            if ((j >= W[i - 1]) && (B[i, j] < B[i - 1, j - W[i - 1]] + V[i - 1]))
+//            {
+//                B[i, j] = B[i - 1, j - W[i - 1]] + V[i - 1];
+//            }
 
-            //public void KnapsackDyProg(int[] W, int[] V, int M, int n)
-            //{
-            //    int[,] B = new int[n + 1, M + 1];
+//            Console.Write(B[i, j] + " ");
+//        }
+//        Console.Write("\n");
+//    }
 
-            //    for (int i = 0; i <= n; i++)
-            //        for (int j = 0; j <= M; j++)
-            //        {
-            //            B[i, j] = 0;
-            //        }
+//    Console.WriteLine("Max Value:\t" + B[n, M]);
 
-            //    for (int i = 1; i <= n; i++)
-            //    {
-            //        for (int j = 0; j <= M; j++)
-            //        {
-            //            B[i, j] = B[i - 1, j];
+//    Console.WriteLine("Selected Packs: ");
 
-            //            if ((j >= W[i - 1]) && (B[i, j] < B[i - 1, j - W[i - 1]] + V[i - 1]))
-            //            {
-            //                B[i, j] = B[i - 1, j - W[i - 1]] + V[i - 1];
-            //            }
+//    while (n != 0)
+//    {
+//        if (B[n, M] != B[n - 1, M])
+//        {
+//            Console.WriteLine("\tPackage " + n + " with W = " + W[n - 1] + " and Value = " + V[n - 1]);
 
-            //            Console.Write(B[i, j] + " ");
-            //        }
-            //        Console.Write("\n");
-            //    }
+//            M = M - W[n - 1];
+//        }
 
-            //    Console.WriteLine("Max Value:\t" + B[n, M]);
-
-            //    Console.WriteLine("Selected Packs: ");
-
-            //    while (n != 0)
-            //    {
-            //        if (B[n, M] != B[n - 1, M])
-            //        {
-            //            Console.WriteLine("\tPackage " + n + " with W = " + W[n - 1] + " and Value = " + V[n - 1]);
-
-            //            M = M - W[n - 1];
-            //        }
-
-            //        n--;
-            //    }
-            //}
+//        n--;
+//    }
+//}
 
 
 
