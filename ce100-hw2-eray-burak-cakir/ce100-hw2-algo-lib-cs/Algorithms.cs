@@ -65,6 +65,7 @@ namespace ce100_hw2_algo_lib_cs
                 // Sondaki eleman haricinde kalan elemanlar için max heap oluşturma
                 Heapify(outputArray, i, 0);
             }
+         
             int finalScore2 = 0;
             for (int i = 0; i < outputArray.Length; i++)
             {
@@ -99,8 +100,6 @@ namespace ce100_hw2_algo_lib_cs
             {
                 largest = right;
             }
-
-
             if (largest != i)
             {
                 int temp = arr[i];
